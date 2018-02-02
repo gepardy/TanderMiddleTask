@@ -5,5 +5,10 @@ package com.avakimov.tandermiddletask.domain;
  */
 
 public class User {
+    String username;
 
+    @Override
+    public String toString() {
+        return username;
+    }
 }

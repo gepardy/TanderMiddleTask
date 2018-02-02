@@ -4,6 +4,8 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.ArrayAdapter;
@@ -11,6 +13,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.avakimov.tandermiddletask.di.RequestModule;
 import com.avakimov.tandermiddletask.domain.User;
 import com.avakimov.tandermiddletask.ui.RequestViewModel;
 import com.avakimov.tandermiddletask.util.RequestViewModelFactory;
@@ -31,6 +34,9 @@ public class RequestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_request);
 
+        App.getComponent(getApplicationContext())
+                .getRequestComponent(new RequestModule()).inject(this);
+
         fieldSearch = findViewById(R.id.search_field);
         buttonSearch = findViewById(R.id.search_button);
 
@@ -46,13 +52,23 @@ public class RequestActivity extends AppCompatActivity {
             }
         });
 
-        fieldSearch.setOnEditorActionListener((textView, actionId, keyEvent) -> {
-            Log.d(TAG, "GetOnEditAction. TextView has:" + textView.getText() + "Action is:" + actionId + "Key event is: " + keyEvent);
-            if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
-                viewModel.onTypeInSearchField((String) textView.getText());
-                return false;
+
+        fieldSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
             }
-            return false;
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                Log.d(TAG, "GotChangeEditEvent");
+                viewModel.onTypeInSearchField(editable.toString());
+            }
         });
 
         buttonSearch.setOnClickListener(view -> {

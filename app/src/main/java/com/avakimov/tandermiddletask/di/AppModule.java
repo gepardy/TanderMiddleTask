@@ -15,13 +15,21 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 @Module
 public class AppModule {
+    public static final String BASE_URL = "https://api.instagram.com/v1/";
+
     @Provides
     @Singleton
-    InstagramService provideInstagramService(){
-        Retrofit.Builder builder = new Retrofit.Builder()
+    public Retrofit provideRetrofit(){
+        return new Retrofit.Builder()
+                .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl("https://api.instagram.com/v1");
-        return builder.build().create(InstagramService.class);
+                .build();
+    }
+
+    @Provides
+    @Singleton
+    InstagramService provideInstagramService(Retrofit retrofit){
+        return retrofit.create(InstagramService.class);
 
     }
 
@@ -30,6 +38,5 @@ public class AppModule {
     String provideToken() {
         return "1940222073.c4ee181.00881bce6fc34c69928410a2cb7670b6";
     }
-
 
 }

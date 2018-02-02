@@ -18,8 +18,8 @@ import retrofit2.http.QueryMap;
  */
 
 public interface InstagramService {
-    @GET("/users/self/")
-    Call<User> getUser(@Query("access_token") String token);
+    @GET("users/self")
+    Call<UserResponse> getUser(@Query("access_token") String token);
     Call<List<Media>> getUserMedia(@Query("access_token") String token,
                                    @QueryMap Map<String, String> options);
 }
