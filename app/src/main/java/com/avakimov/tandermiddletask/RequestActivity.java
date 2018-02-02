@@ -1,21 +1,86 @@
 package com.avakimov.tandermiddletask;
 
+import android.arch.lifecycle.ViewModelProviders;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.Toast;
+
+import com.avakimov.tandermiddletask.domain.User;
+import com.avakimov.tandermiddletask.ui.RequestViewModel;
+import com.avakimov.tandermiddletask.util.RequestViewModelFactory;
+
+import javax.inject.Inject;
+
+public class RequestActivity extends AppCompatActivity {
+    @Inject
+    RequestViewModelFactory requestViewModelFactory;
+
+    private String TAG = getClass().getName();
+    private RequestViewModel viewModel;
+    private AutoCompleteTextView fieldSearch;
+    private Button buttonSearch;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_request);
+
+        fieldSearch = findViewById(R.id.search_field);
+        buttonSearch = findViewById(R.id.search_button);
+
+        viewModel = ViewModelProviders.of(this, requestViewModelFactory)
+                .get(RequestViewModel.class);
+
+        viewModel.getSuggestions().observe(this, suggestions -> {
+            if (suggestions != null) {
+                ArrayAdapter<User> adapter = new ArrayAdapter<User>(this,
+                        android.R.layout.simple_dropdown_item_1line,
+                        suggestions);
+                fieldSearch.setAdapter(adapter);
+            }
+        });
+
+        fieldSearch.setOnEditorActionListener((textView, actionId, keyEvent) -> {
+            Log.d(TAG, "GetOnEditAction. TextView has:" + textView.getText() + "Action is:" + actionId + "Key event is: " + keyEvent);
+            if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
+                viewModel.onTypeInSearchField((String) textView.getText());
+                return false;
+            }
+            return false;
+        });
+
+        buttonSearch.setOnClickListener(view -> {
+            Toast.makeText(this, "Кнопку нажал", Toast.LENGTH_SHORT).show();
+        });
+    }
+}
+/*
+
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.AutoCompleteTextView;
 
 import java.util.HashMap;
 
 public class RequestActivity extends AppCompatActivity {
-    private String TAG = "MAIN";
+    private String TAG = getClass().getName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_request);
-        getFuckingToken();
+        AutoCompleteTextView fieldSearch = new AutoCompleteTextView(this);
+
     }
 
     private void requestInternetPermission() {
@@ -67,3 +132,5 @@ public class RequestActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }
+
+*/

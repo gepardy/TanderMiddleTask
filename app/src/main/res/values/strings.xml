@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">TanderMiddleTask</string>
+    <string name="find_button_text">Найти</string>
+    <string name="input_invitation">Введите имя пользователя</string>
 </resources>
