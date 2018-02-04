@@ -4,8 +4,8 @@ import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
 
-import com.avakimov.tandermiddletask.repository.RemoteRepository;
-import com.avakimov.tandermiddletask.repository.RequestRepository;
+import com.avakimov.tandermiddletask.repository.RequestRemoteRepository;
+import com.avakimov.tandermiddletask.repository.RequestLocalRepository;
 import com.avakimov.tandermiddletask.ui.RequestViewModel;
 
 import javax.inject.Inject;
@@ -15,11 +15,11 @@ import javax.inject.Inject;
  */
 
 public class RequestViewModelFactory implements ViewModelProvider.Factory {
-    private RequestRepository localRepo;
-    private RemoteRepository remoteRepo;
+    private RequestLocalRepository localRepo;
+    private RequestRemoteRepository remoteRepo;
 
     @Inject
-    public RequestViewModelFactory(RequestRepository local, RemoteRepository remote) {
+    public RequestViewModelFactory(RequestLocalRepository local, RequestRemoteRepository remote) {
         localRepo = local;
         remoteRepo = remote;
     }

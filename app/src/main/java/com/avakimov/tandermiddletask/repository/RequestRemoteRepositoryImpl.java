@@ -11,9 +11,6 @@ import com.avakimov.tandermiddletask.domain.User;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -22,12 +19,12 @@ import retrofit2.Response;
  * Created by Andrew on 01.02.2018.
  */
 
-public class RemoteRepositoryImpl implements RemoteRepository {
+public class RequestRemoteRepositoryImpl implements RequestRemoteRepository {
     private final String TAG = getClass().getName();
     private final String token;
     private final InstagramService service;
 
-    public RemoteRepositoryImpl(InstagramService service, String token){
+    public RequestRemoteRepositoryImpl(InstagramService service, String token){
         this.service = service;
         this.token = token;
     }
@@ -38,6 +35,7 @@ public class RemoteRepositoryImpl implements RemoteRepository {
         // Здесь по-хорошему нужно обращение к другому методу API, но из-за ограничений песочницы,
         // только этот, который не принимает имя пользователя
         service.getUser(token).enqueue(new Callback<UserResponse>() {
+
             @Override
             public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
                 if (response.isSuccessful() && response.code() == 200) {

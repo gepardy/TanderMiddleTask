@@ -8,6 +8,7 @@ import dagger.Subcomponent;
  * Created by Andrew on 02.02.2018.
  */
 
+@RequestScope
 @Subcomponent(modules = { RequestModule.class })
 public interface RequestComponent {
     void inject(RequestActivity requestActivity);

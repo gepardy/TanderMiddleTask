@@ -1,6 +1,14 @@
 package com.avakimov.tandermiddletask.di;
 
+import android.arch.persistence.room.Room;
+import android.content.Context;
+
 import com.avakimov.tandermiddletask.api.InstagramService;
+import com.avakimov.tandermiddletask.local.TanderMiddleDAO;
+import com.avakimov.tandermiddletask.local.TanderMiddleDatabase;
+
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -15,7 +23,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 @Module
 public class AppModule {
-    public static final String BASE_URL = "https://api.instagram.com/v1/";
+    private static final String BASE_URL = "https://api.instagram.com/v1/";
+    private Context context;
+
+    public AppModule(Context context) {
+        this.context = context;
+    }
 
     @Provides
     @Singleton
@@ -37,6 +50,25 @@ public class AppModule {
     @Named("token")
     String provideToken() {
         return "1940222073.c4ee181.00881bce6fc34c69928410a2cb7670b6";
+    }
+
+    @Provides
+    @Singleton
+    TanderMiddleDatabase provideDatabase() {
+        return Room.databaseBuilder(context.getApplicationContext(),
+                TanderMiddleDatabase.class, "tander_middle_database.db")
+                .build();
+    }
+
+    @Provides
+    TanderMiddleDAO provideDao(TanderMiddleDatabase db) {
+        return db.getTanderMiddleDao();
+    }
+
+    @Provides
+    @Singleton
+    Executor provideExecutor() {
+        return Executors.newFixedThreadPool(5);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.avakimov.tandermiddletask;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -52,7 +53,7 @@ public class RequestActivity extends AppCompatActivity {
             }
         });
 
-
+        fieldSearch.clearFocus();
         fieldSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -72,7 +73,10 @@ public class RequestActivity extends AppCompatActivity {
         });
 
         buttonSearch.setOnClickListener(view -> {
-            Toast.makeText(this, "Кнопку нажал", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, MediaListActivity.class);
+            intent.putExtra("search_type", MediaListActivity.SEARCH_TYPE_BY_NAME);
+            intent.putExtra("user_name", fieldSearch.getText());
+            startActivity(intent);
         });
     }
 }

@@ -10,6 +10,6 @@ import java.util.List;
  * Created by Andrew on 01.02.2018.
  */
 
-public interface RemoteRepository {
+public interface RequestRemoteRepository {
     LiveData<List<User>> getUsersByNamePart(String value);
 }

@@ -1,10 +1,10 @@
 package com.avakimov.tandermiddletask.di;
 
 import com.avakimov.tandermiddletask.api.InstagramService;
-import com.avakimov.tandermiddletask.repository.RemoteRepository;
-import com.avakimov.tandermiddletask.repository.RemoteRepositoryImpl;
-import com.avakimov.tandermiddletask.repository.RequestRepository;
-import com.avakimov.tandermiddletask.repository.RequestRespoitoryImpl;
+import com.avakimov.tandermiddletask.repository.RequestRemoteRepository;
+import com.avakimov.tandermiddletask.repository.RequestRemoteRepositoryImpl;
+import com.avakimov.tandermiddletask.repository.RequestLocalRepository;
+import com.avakimov.tandermiddletask.repository.RequestLocalRespoitoryImpl;
 
 import javax.inject.Named;
 
@@ -17,13 +17,15 @@ import dagger.Provides;
 @Module
 public class RequestModule {
 
+    @RequestScope
     @Provides
-    RequestRepository provideRequestRespoitory(){
-        return new RequestRespoitoryImpl();
+    RequestLocalRepository provideRequestRespoitory(){
+        return new RequestLocalRespoitoryImpl();
     }
 
+    @RequestScope
     @Provides
-    RemoteRepository provideRemoteRepository(InstagramService instagramService, @Named("token") String token){
-        return new RemoteRepositoryImpl(instagramService, token);
+    RequestRemoteRepository provideRemoteRepository(InstagramService instagramService, @Named("token") String token){
+        return new RequestRemoteRepositoryImpl(instagramService, token);
     }
 }

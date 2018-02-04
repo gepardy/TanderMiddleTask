@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.avakimov.tandermiddletask.di.AppComponent;
+import com.avakimov.tandermiddletask.di.AppModule;
 import com.avakimov.tandermiddletask.di.DaggerAppComponent;
 
 /**
@@ -17,7 +18,8 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
 
-        appComponent = DaggerAppComponent.builder().build();
+        appComponent = DaggerAppComponent.builder()
+                .appModule(new AppModule(getApplicationContext())).build();
     }
 
     public static AppComponent getComponent(Context context){

@@ -14,4 +14,5 @@ import dagger.Component;
 @Component(modules = {AppModule.class})
 public interface AppComponent {
     RequestComponent getRequestComponent(RequestModule requestModule);
+    MediaListComponent getMediaListComponent(MediaListModule mediaListModule);
 }
