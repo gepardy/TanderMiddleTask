@@ -15,6 +15,9 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -32,16 +35,31 @@ public class AppModule {
 
     @Provides
     @Singleton
-    public Retrofit provideRetrofit(){
-        return new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+    Interceptor provideInterceptor() {
+        return new HttpLoggingInterceptor()
+                .setLevel(HttpLoggingInterceptor.Level.BODY);
     }
 
     @Provides
     @Singleton
-    InstagramService provideInstagramService(Retrofit retrofit){
+    OkHttpClient provideHttpClient(Interceptor interceptor) {
+        return new OkHttpClient.Builder().addInterceptor(interceptor).build();
+    }
+
+    @Provides
+    @Singleton
+    Retrofit provideRetrofit(OkHttpClient client) {
+        return new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+    }
+
+
+    @Provides
+    @Singleton
+    InstagramService provideInstagramService(Retrofit retrofit) {
         return retrofit.create(InstagramService.class);
 
     }
@@ -69,7 +87,7 @@ public class AppModule {
     @Provides
     @Singleton
     Executor provideExecutor() {
-        return Executors.newFixedThreadPool(5);
+        return Executors.newFixedThreadPool(3);
     }
 
 }

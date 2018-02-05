@@ -11,12 +11,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/autor_avatar"
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            app:roundWithOverlayColor="@color/cardview_light_background"
+            app:roundedCornerRadius="8dp"
+            app:roundingBorderColor="@color/cardview_shadow_start_color"
+            app:roundingBorderWidth="1dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="ContentDescription" />
@@ -32,7 +36,7 @@
             app:layout_constraintStart_toEndOf="@id/autor_avatar"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/post_image"
             android:layout_width="0dp"
             android:layout_height="160dp"
@@ -42,6 +46,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/autor_avatar"
+            app:placeholderImage="@drawable/placeholder"
             tools:ignore="ContentDescription" />
 
         <ImageView
@@ -76,10 +81,12 @@
             android:layout_marginBottom="8dp"
             android:text=""
             android:textSize="12sp"
+            app:layout_constraintVertical_bias="0"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/likes_count"
             app:layout_constraintTop_toBottomOf="@id/post_image"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            />
 
 
     </android.support.constraint.ConstraintLayout>

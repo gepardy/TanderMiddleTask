@@ -1,6 +1,7 @@
 package com.avakimov.tandermiddletask.ui;
 
 import android.arch.paging.PagedListAdapter;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import com.avakimov.tandermiddletask.R;
 import com.avakimov.tandermiddletask.domain.Media;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 /**
  * Created by Andrew on 04.02.2018.
@@ -38,8 +40,8 @@ public class MediaAdapter extends PagedListAdapter<Media, MediaAdapter.ViewHolde
         TextView authorName;
         TextView postDescription;
         TextView likesCount;
-        ImageView authorAvatar;
-        ImageView postImage;
+        SimpleDraweeView authorAvatar;
+        SimpleDraweeView postImage;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -54,6 +56,13 @@ public class MediaAdapter extends PagedListAdapter<Media, MediaAdapter.ViewHolde
             authorName.setText(media.getAuthorName());
             postDescription.setText(media.getCaption());
             likesCount.setText(String.valueOf(media.getLikesCount()));
+
+            Uri imageUri = Uri.parse(media.getStandardResolutionImageUrl());
+            postImage.setImageURI(imageUri);
+
+            Uri autrorAvatarUri = Uri.parse(media.getAuthorAvatarUrl());
+            authorAvatar.setImageURI(autrorAvatarUri);
+
         }
     }
 }
