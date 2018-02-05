@@ -1,10 +1,7 @@
 package com.avakimov.tandermiddletask.ui;
 
 import android.arch.paging.PagedListAdapter;
-import android.support.annotation.NonNull;
-import android.support.v7.recyclerview.extensions.DiffCallback;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,17 +9,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.avakimov.tandermiddletask.R;
-import com.avakimov.tandermiddletask.local.MediaEntity;
+import com.avakimov.tandermiddletask.domain.Media;
 
 /**
  * Created by Andrew on 04.02.2018.
  */
 
-public class MediaAdapter extends PagedListAdapter<MediaEntity, MediaAdapter.ViewHolder> {
+public class MediaAdapter extends PagedListAdapter<Media, MediaAdapter.ViewHolder> {
     private final String TAG = getClass().getSimpleName();
 
     public MediaAdapter(){
-        super(MediaEntity.DIFF_CALLBACK);
+        super(Media.DIFF_CALLBACK);
     }
 
     @Override
@@ -53,7 +50,7 @@ public class MediaAdapter extends PagedListAdapter<MediaEntity, MediaAdapter.Vie
             postImage = itemView.findViewById(R.id.post_image);
         }
 
-        void bindTo(MediaEntity media){
+        void bindTo(Media media){
             authorName.setText(media.getAuthorName());
             postDescription.setText(media.getCaption());
             likesCount.setText(String.valueOf(media.getLikesCount()));

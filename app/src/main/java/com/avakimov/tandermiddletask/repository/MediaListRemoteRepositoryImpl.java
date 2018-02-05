@@ -8,13 +8,10 @@ import android.util.Log;
 import com.avakimov.tandermiddletask.api.InstagramService;
 import com.avakimov.tandermiddletask.api.MediaResponse;
 import com.avakimov.tandermiddletask.api.UserResponse;
-import com.avakimov.tandermiddletask.domain.Media;
 import com.avakimov.tandermiddletask.util.NetworkState;
 import com.avakimov.tandermiddletask.util.Status;
 
 import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.Executor;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -50,7 +47,7 @@ public class MediaListRemoteRepositoryImpl implements MediaListRemoteRepository 
             @Override
             public void onResponse(Call<MediaResponse> call, Response<MediaResponse> response) {
                 if (response.isSuccessful() && response.code() == 200) {
-                    consumer.consumeMedia(response.body().mediaList);
+                    consumer.consumeMedia(response.body().instaMediaList);
                 } else {
                     Log.e(TAG, "Request to media failed. Response code is: " + response.code());
                 }
@@ -73,7 +70,9 @@ public class MediaListRemoteRepositoryImpl implements MediaListRemoteRepository 
                @Override
                public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
                     if (response.isSuccessful() && response.code() == 200) {
-                        result.postValue(response.body().user.id);
+                        if (response.body().user.username.equals(name)) {
+                            result.postValue(response.body().user.id);
+                        }
                     }
                }
 

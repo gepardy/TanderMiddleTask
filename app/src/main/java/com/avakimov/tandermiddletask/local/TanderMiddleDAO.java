@@ -2,7 +2,6 @@ package com.avakimov.tandermiddletask.local;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
-import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
 import android.arch.paging.DataSource;
@@ -16,12 +15,12 @@ import java.util.List;
  */
 @Dao
 public interface TanderMiddleDAO {
-    @Query("SELECT * FROM media WHERE user_id = :user_id ORDER BY id DESC")
-    DataSource.Factory<Integer, MediaEntity> getUsersMedia(int user_id);
+    @Query("SELECT * FROM Media WHERE user_id = :user_id ORDER BY id DESC")
+    DataSource.Factory<Integer, Media> getUsersMedia(int user_id);
 
     @Insert
-    void insertMediaList(List<MediaEntity> mediaList);
+    void insertMediaList(List<Media> mediaList);
 
-    @Query("DELETE FROM media")
+    @Query("DELETE FROM Media")
     void clearMedia();
 }

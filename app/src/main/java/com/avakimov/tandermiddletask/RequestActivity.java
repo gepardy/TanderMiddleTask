@@ -75,7 +75,7 @@ public class RequestActivity extends AppCompatActivity {
         buttonSearch.setOnClickListener(view -> {
             Intent intent = new Intent(this, MediaListActivity.class);
             intent.putExtra("search_type", MediaListActivity.SEARCH_TYPE_BY_NAME);
-            intent.putExtra("user_name", fieldSearch.getText());
+            intent.putExtra("user_name", fieldSearch.getText().toString());
             startActivity(intent);
         });
     }

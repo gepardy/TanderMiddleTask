@@ -2,7 +2,7 @@ package com.avakimov.tandermiddletask.repository;
 
 import android.arch.paging.DataSource;
 
-import com.avakimov.tandermiddletask.local.MediaEntity;
+import com.avakimov.tandermiddletask.domain.Media;
 import com.avakimov.tandermiddletask.local.TanderMiddleDAO;
 
 import java.util.List;
@@ -22,12 +22,12 @@ public class MediaListLocalRepositoryImpl implements MediaListLocalRepository {
     }
 
     @Override
-    public DataSource.Factory<Integer, MediaEntity> getMediaByUserId(Integer user_id) {
+    public DataSource.Factory<Integer, Media> getMediaByUserId(Integer user_id) {
         return db.getUsersMedia(user_id);
     }
 
     @Override
-    public void insertMedia(List<MediaEntity> mediaList) {
+    public void insertMedia(List<Media> mediaList) {
         executor.execute(() -> db.insertMediaList(mediaList));
     }
 

@@ -2,7 +2,7 @@ package com.avakimov.tandermiddletask.repository;
 
 import android.arch.paging.DataSource;
 
-import com.avakimov.tandermiddletask.local.MediaEntity;
+import com.avakimov.tandermiddletask.domain.Media;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import java.util.List;
  */
 
 public interface MediaListLocalRepository {
-    DataSource.Factory<Integer, MediaEntity> getMediaByUserId(Integer userId);
-    void insertMedia(List<MediaEntity> mediaList);
+    DataSource.Factory<Integer, Media> getMediaByUserId(Integer userId);
+    void insertMedia(List<Media> mediaList);
     void clearMedia();
 }

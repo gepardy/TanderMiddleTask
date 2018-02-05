@@ -1,11 +1,5 @@
 package com.avakimov.tandermiddletask.api;
 
-import android.provider.MediaStore;
-
-import com.avakimov.tandermiddletask.domain.Media;
-import com.avakimov.tandermiddletask.domain.User;
-
-import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;

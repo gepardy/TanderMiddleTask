@@ -9,8 +9,8 @@ import android.arch.paging.PagedList;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.avakimov.tandermiddletask.api.MediaResponse;
 import com.avakimov.tandermiddletask.domain.Media;
-import com.avakimov.tandermiddletask.local.MediaEntity;
 import com.avakimov.tandermiddletask.repository.MediaListLocalRepository;
 import com.avakimov.tandermiddletask.repository.MediaListRemoteRepository;
 import com.avakimov.tandermiddletask.util.NetworkState;
@@ -26,7 +26,7 @@ public class MediaListViewModel extends ViewModel {
     private MediaListRemoteRepository remoteRepository;
     private MediaListLocalRepository localRepository;
 
-    private LiveData<PagedList<MediaEntity>> mediaList;
+    private LiveData<PagedList<Media>> mediaList;
     private LiveData<NetworkState> networkState;
 
     private MutableLiveData<String> findUserTrigger;
@@ -40,7 +40,7 @@ public class MediaListViewModel extends ViewModel {
 
     }
 
-    public LiveData<PagedList<MediaEntity>> getMediaListByUserName(String userName) {
+    public LiveData<PagedList<Media>> getMediaListByUserName(String userName) {
         findMediaTrigger = Transformations.switchMap(findUserTrigger, input ->
                 remoteRepository.getExactUserByName(input));
         initMediaList();
@@ -48,7 +48,7 @@ public class MediaListViewModel extends ViewModel {
         return mediaList;
     }
 
-    public LiveData<PagedList<MediaEntity>> getMediaListByUserId(Integer user_id) {
+    public LiveData<PagedList<Media>> getMediaListByUserId(Integer user_id) {
         findMediaTrigger = new MutableLiveData<>();
         initMediaList();
         ((MutableLiveData<Integer>) findMediaTrigger).postValue(user_id);
@@ -69,7 +69,7 @@ public class MediaListViewModel extends ViewModel {
 
     //  Класс для информирования ViewModel о том что лист дошел до границы,
     // и пора бы скачать данные из сети
-    private class MediaListBoundaryCallback extends PagedList.BoundaryCallback<MediaEntity> {
+    private class MediaListBoundaryCallback extends PagedList.BoundaryCallback<Media> {
         private String TAG = getClass().getSimpleName();
         private int user_id;
 
@@ -84,22 +84,22 @@ public class MediaListViewModel extends ViewModel {
         }
 
         @Override
-        public void onItemAtFrontLoaded(@NonNull MediaEntity itemAtFront) {}
+        public void onItemAtFrontLoaded(@NonNull Media itemAtFront) {}
 
         @Override
-        public void onItemAtEndLoaded(@NonNull MediaEntity itemAtEnd) {
+        public void onItemAtEndLoaded(@NonNull Media itemAtEnd) {
             Log.d(TAG, "End item loaded " + itemAtEnd.getId());
             loadSomeMedia(itemAtEnd.getId());
         }
 
         private void loadSomeMedia(Long last_id) {
-            remoteRepository.requestMediaList(user_id, last_id, (List<Media> mediaList) -> {
-                List<MediaEntity> mediaEntityList = new ArrayList<>(mediaList.size());
-                for ( Media m : mediaList ) {
+            remoteRepository.requestMediaList(user_id, last_id, (List<MediaResponse.InstaMedia> instaMediaList) -> {
+                List<Media> mediaList = new ArrayList<>(instaMediaList.size());
+                for ( MediaResponse.InstaMedia m : instaMediaList) {
                     Log.d(TAG, "Processing media record with id:" + Long.valueOf(m.id.substring(0, m.id.indexOf("_"))));
-                    mediaEntityList.add( new MediaEntity( Long.valueOf(m.id.substring(0, m.id.indexOf("_"))),
+                    mediaList.add( new Media( Long.valueOf(m.id.substring(0, m.id.indexOf("_"))),
                             Long.valueOf(m.user.id),
-                            m.images.standartResolution.url,
+                            m.images.standardResolution.url,
                             m.images.lowResolution.url,
                             m.images.thumbnail.url,
                             m.user.profileImageUrl,
@@ -107,7 +107,7 @@ public class MediaListViewModel extends ViewModel {
                             m.likes.count,
                             m.caption.text));
                 }
-                localRepository.insertMedia(mediaEntityList);
+                localRepository.insertMedia(mediaList);
             });
 
         }

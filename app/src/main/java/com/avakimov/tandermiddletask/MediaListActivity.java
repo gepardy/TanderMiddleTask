@@ -1,18 +1,13 @@
 package com.avakimov.tandermiddletask;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.arch.paging.PagedList;
 import android.content.Intent;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.avakimov.tandermiddletask.di.MediaListModule;
-import com.avakimov.tandermiddletask.domain.Media;
-import com.avakimov.tandermiddletask.local.MediaEntity;
 import com.avakimov.tandermiddletask.ui.MediaAdapter;
 import com.avakimov.tandermiddletask.ui.MediaListViewModel;
 import com.avakimov.tandermiddletask.util.MediaListViewModelFactory;
@@ -55,8 +50,7 @@ public class MediaListActivity extends AppCompatActivity {
 
         if (searchType == SEARCH_TYPE_BY_NAME) {
 
-            String user_name = "gepardy02";
-            //intent.getStringExtra("user_name");
+            String user_name = intent.getStringExtra(EXTRA_USER_NAME);
             if (user_name != null) {
                 viewModel.getMediaListByUserName(user_name)
                         .observe(this, pagedList -> {
