@@ -12,7 +12,7 @@ public class Image {
     @SerializedName("low_resolution")
     public ImageInfo lowResolution;
     public ImageInfo thumbnail;
-    @SerializedName("standart_resolution")
+    @SerializedName("standard_resolution")
     public ImageInfo standartResolution;
 
 }

@@ -5,11 +5,10 @@ import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.avakimov.tandermiddletask.api.FindUserResponse;
 import com.avakimov.tandermiddletask.api.InstagramService;
 import com.avakimov.tandermiddletask.api.MediaResponse;
+import com.avakimov.tandermiddletask.api.UserResponse;
 import com.avakimov.tandermiddletask.domain.Media;
-import com.avakimov.tandermiddletask.domain.User;
 import com.avakimov.tandermiddletask.util.NetworkState;
 import com.avakimov.tandermiddletask.util.Status;
 
@@ -30,8 +29,6 @@ public class MediaListRemoteRepositoryImpl implements MediaListRemoteRepository 
     private final String token;
     private InstagramService service;
     private MutableLiveData<NetworkState> networkState;
-    private MutableLiveData<List<Media>> mediaList;
-    private MutableLiveData<Integer> userId;
 
     public MediaListRemoteRepositoryImpl(String token, InstagramService service){
         this.token = token;
@@ -41,14 +38,14 @@ public class MediaListRemoteRepositoryImpl implements MediaListRemoteRepository 
     }
 
     @Override
-    public void requestMediaList(Integer user_id, @Nullable Integer last_id, MediaListRemoteRepository.MediaListConsumer consumer) {
+    public void requestMediaList(Integer user_id, @Nullable Long last_id, MediaListRemoteRepository.MediaListConsumer consumer) {
         HashMap<String, String> params = new HashMap<>();
-        params.put("count", String.valueOf(5));
+        params.put("count", String.valueOf(6));
         if (last_id != null) {
-            params.put("min_id", String.valueOf(last_id));
+            params.put("max_id", String.valueOf(last_id));
         }
         networkState.postValue(NetworkState.LOADING);
-        service.getUserMedia(token, user_id, params).enqueue(new Callback<MediaResponse>() {
+        service.getUserMedia(user_id, token, params).enqueue(new Callback<MediaResponse>() {
 
             @Override
             public void onResponse(Call<MediaResponse> call, Response<MediaResponse> response) {
@@ -72,28 +69,16 @@ public class MediaListRemoteRepositoryImpl implements MediaListRemoteRepository 
     @Override
     public LiveData<Integer> getExactUserByName(String name) {
         MutableLiveData<Integer> result = new MutableLiveData<>();
-        service.findUsers(token, name).enqueue(new Callback<FindUserResponse>() {
+        service.getUser(token).enqueue(new Callback<UserResponse>() {
                @Override
-               public void onResponse(Call<FindUserResponse> call, Response<FindUserResponse> response) {
+               public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
                     if (response.isSuccessful() && response.code() == 200) {
-                        List<User> responseBody = response.body().data;
-
-                        if (responseBody.size() != 1) {
-                            Log.d(TAG, "Response has more than one user");
-                            return;
-                        }
-
-                        if (!responseBody.get(0).username.equals(name)) {
-                            Log.d(TAG, "Specified user is not found");
-                            return;
-                        }
-
-                        result.postValue(responseBody.get(0).id);
+                        result.postValue(response.body().user.id);
                     }
                }
 
                @Override
-               public void onFailure(Call<FindUserResponse> call, Throwable t) {
+               public void onFailure(Call<UserResponse> call, Throwable t) {
                    Log.e(TAG, t.getMessage());
                }
            }

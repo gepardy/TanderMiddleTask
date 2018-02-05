@@ -22,10 +22,7 @@ public interface InstagramService {
     @GET("users/self")
     Call<UserResponse> getUser(@Query("access_token") String token);
     @GET("users/{user_id}/media/recent")
-    Call<MediaResponse> getUserMedia(@Query("access_token") String token,
-                                   @Path("user_id") Integer user_id,
-                                   @QueryMap Map<String, String> options);
-    @GET("users/search")
-    Call<FindUserResponse> findUsers(@Query("access_token") String token,
-                                     @Query("q") String query);
+    Call<MediaResponse> getUserMedia(@Path("user_id") Integer user_id,
+                                     @Query("access_token") String token,
+                                     @QueryMap Map<String, String> options);
 }

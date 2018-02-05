@@ -2,6 +2,7 @@ package com.avakimov.tandermiddletask.local;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
 import android.arch.paging.DataSource;
@@ -20,4 +21,7 @@ public interface TanderMiddleDAO {
 
     @Insert
     void insertMediaList(List<MediaEntity> mediaList);
+
+    @Query("DELETE FROM media")
+    void clearMedia();
 }

@@ -13,7 +13,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by Andrew on 31.01.2018.
  */
 public class Media {
-    public Integer id;
+    public String id;
     public User user;
     public String link;
     public Image images;

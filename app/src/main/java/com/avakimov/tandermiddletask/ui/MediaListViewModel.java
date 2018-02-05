@@ -7,6 +7,7 @@ import android.arch.lifecycle.ViewModel;
 import android.arch.paging.LivePagedListBuilder;
 import android.arch.paging.PagedList;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.avakimov.tandermiddletask.domain.Media;
 import com.avakimov.tandermiddletask.local.MediaEntity;
@@ -34,7 +35,7 @@ public class MediaListViewModel extends ViewModel {
     public MediaListViewModel(MediaListRemoteRepository remoteRepository, MediaListLocalRepository localRepository) {
         this.remoteRepository = remoteRepository;
         this.localRepository = localRepository;
-
+        localRepository.clearMedia();
         findUserTrigger = new MutableLiveData<>();
 
     }
@@ -57,9 +58,7 @@ public class MediaListViewModel extends ViewModel {
     private void initMediaList(){
         PagedList.Config config = new PagedList.Config.Builder()
                 .setEnablePlaceholders(false)
-                .setInitialLoadSizeHint(5)
-                .setPageSize(5)
-                .setPrefetchDistance(3)
+                .setPageSize(6)
                 .build();
 
         mediaList = Transformations.switchMap( findMediaTrigger, input ->
@@ -71,6 +70,7 @@ public class MediaListViewModel extends ViewModel {
     //  Класс для информирования ViewModel о том что лист дошел до границы,
     // и пора бы скачать данные из сети
     private class MediaListBoundaryCallback extends PagedList.BoundaryCallback<MediaEntity> {
+        private String TAG = getClass().getSimpleName();
         private int user_id;
 
         MediaListBoundaryCallback(int user_id) {
@@ -79,6 +79,7 @@ public class MediaListViewModel extends ViewModel {
 
         @Override
         public void onZeroItemsLoaded() {
+            Log.d(TAG, "Zero items loaded");
             loadSomeMedia(null);
         }
 
@@ -87,15 +88,17 @@ public class MediaListViewModel extends ViewModel {
 
         @Override
         public void onItemAtEndLoaded(@NonNull MediaEntity itemAtEnd) {
+            Log.d(TAG, "End item loaded " + itemAtEnd.getId());
             loadSomeMedia(itemAtEnd.getId());
         }
 
-        private void loadSomeMedia(Integer last_id) {
-            remoteRepository.requestMediaList(user_id, null, (List<Media> mediaList) -> {
+        private void loadSomeMedia(Long last_id) {
+            remoteRepository.requestMediaList(user_id, last_id, (List<Media> mediaList) -> {
                 List<MediaEntity> mediaEntityList = new ArrayList<>(mediaList.size());
                 for ( Media m : mediaList ) {
-                    mediaEntityList.add( new MediaEntity( m.id,
-                            m.user.id,
+                    Log.d(TAG, "Processing media record with id:" + Long.valueOf(m.id.substring(0, m.id.indexOf("_"))));
+                    mediaEntityList.add( new MediaEntity( Long.valueOf(m.id.substring(0, m.id.indexOf("_"))),
+                            Long.valueOf(m.user.id),
                             m.images.standartResolution.url,
                             m.images.lowResolution.url,
                             m.images.thumbnail.url,

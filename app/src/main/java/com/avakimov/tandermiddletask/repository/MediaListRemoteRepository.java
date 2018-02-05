@@ -15,7 +15,7 @@ import retrofit2.Callback;
  */
 
 public interface MediaListRemoteRepository {
-    void requestMediaList(Integer user_id, @Nullable Integer last_id, MediaListConsumer consumer);
+    void requestMediaList(Integer user_id, @Nullable Long last_id, MediaListConsumer consumer);
     LiveData<Integer> getExactUserByName(String name);
     LiveData<NetworkState> getNetworkState();
 

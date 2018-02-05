@@ -12,8 +12,8 @@ import android.support.v7.recyclerview.extensions.DiffCallback;
 @Entity(tableName = "media")
 public class MediaEntity {
     @PrimaryKey
-    private int     id;
-    private int     user_id;
+    private Long     id;
+    private Long     user_id;
     private String  standartResolutionImageUrl;
     private String  lowResolutionImageUrl;
     private String  thumbnailImageUrl;
@@ -25,7 +25,7 @@ public class MediaEntity {
     public static final DiffCallback<MediaEntity> DIFF_CALLBACK = new DiffCallback<MediaEntity>() {
         @Override
         public boolean areItemsTheSame(@NonNull MediaEntity oldItem, @NonNull MediaEntity newItem) {
-            return oldItem.id == newItem.id;
+            return oldItem.id.equals(newItem.id);
         }
 
         @Override
@@ -34,7 +34,7 @@ public class MediaEntity {
         }
     };
 
-    public MediaEntity(int id, int user_id, String standartResolutionImageUrl, String lowResolutionImageUrl, String thumbnailImageUrl, String authorAvatarUrl, String authorName, int likesCount, String caption) {
+    public MediaEntity(Long id, Long user_id, String standartResolutionImageUrl, String lowResolutionImageUrl, String thumbnailImageUrl, String authorAvatarUrl, String authorName, int likesCount, String caption) {
         this.id = id;
         this.user_id = user_id;
         this.standartResolutionImageUrl = standartResolutionImageUrl;
@@ -46,19 +46,19 @@ public class MediaEntity {
         this.caption = caption;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public int getUser_id() {
+    public Long getUser_id() {
         return user_id;
     }
 
-    public void setUser_id(int user_id) {
+    public void setUser_id(Long user_id) {
         this.user_id = user_id;
     }
 

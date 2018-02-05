@@ -30,4 +30,9 @@ public class MediaListLocalRepositoryImpl implements MediaListLocalRepository {
     public void insertMedia(List<MediaEntity> mediaList) {
         executor.execute(() -> db.insertMediaList(mediaList));
     }
+
+    @Override
+    public void clearMedia() {
+        executor.execute(() -> db.clearMedia());
+    }
 }

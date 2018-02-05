@@ -57,6 +57,7 @@ public class AppModule {
     TanderMiddleDatabase provideDatabase() {
         return Room.databaseBuilder(context.getApplicationContext(),
                 TanderMiddleDatabase.class, "tander_middle_database.db")
+                .fallbackToDestructiveMigration()
                 .build();
     }
 

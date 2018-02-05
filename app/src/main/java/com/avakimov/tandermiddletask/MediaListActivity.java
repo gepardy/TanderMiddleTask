@@ -59,7 +59,9 @@ public class MediaListActivity extends AppCompatActivity {
             //intent.getStringExtra("user_name");
             if (user_name != null) {
                 viewModel.getMediaListByUserName(user_name)
-                        .observe(this, mediaAdapter::setList);
+                        .observe(this, pagedList -> {
+                            mediaAdapter.setList(pagedList);
+                        });
             }
         } else if (searchType == SEARCH_TYPE_BY_ID) {
 
@@ -69,7 +71,7 @@ public class MediaListActivity extends AppCompatActivity {
                         .observe(this, mediaAdapter::setList);
             }
         }
-
+        recyclerView.setAdapter(mediaAdapter);
 
     }
 }
