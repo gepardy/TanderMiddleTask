@@ -9,6 +9,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -73,12 +74,26 @@ public class RequestActivity extends AppCompatActivity {
         });
 
         buttonSearch.setOnClickListener(view -> {
-            Intent intent = new Intent(this, MediaListActivity.class);
-            intent.putExtra("search_type", MediaListActivity.SEARCH_TYPE_BY_NAME);
-            intent.putExtra("user_name", fieldSearch.getText().toString());
-            startActivity(intent);
+            searchByName(fieldSearch.getText().toString());
+        });
+
+        fieldSearch.setOnEditorActionListener((textView, i, keyEvent) -> {
+            if (i == EditorInfo.IME_ACTION_SEARCH) {
+                searchByName(textView.getText().toString());
+                return true;
+            }
+            return false;
         });
     }
+
+    private void searchByName(String userName){
+        Intent intent = new Intent(this, MediaListActivity.class);
+        intent.putExtra("search_type", MediaListActivity.SEARCH_TYPE_BY_NAME);
+        intent.putExtra("user_name", userName);
+        startActivity(intent);
+    }
+
+
 }
 /*
 

@@ -27,7 +27,7 @@
             android:completionThreshold="2"
             android:hint="@string/input_invitation"
             android:text=""
-            android:imeOptions="actionGo"
+            android:imeOptions="actionSearch"
             android:inputType="text"/>
 
     </android.support.design.widget.TextInputLayout>
