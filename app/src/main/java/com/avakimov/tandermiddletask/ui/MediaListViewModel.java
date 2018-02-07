@@ -35,9 +35,14 @@ public class MediaListViewModel extends ViewModel {
     public MediaListViewModel(MediaListRemoteRepository remoteRepository, MediaListLocalRepository localRepository) {
         this.remoteRepository = remoteRepository;
         this.localRepository = localRepository;
+        networkState = remoteRepository.getNetworkState();
         localRepository.clearMedia();
         findUserTrigger = new MutableLiveData<>();
 
+    }
+
+    public LiveData<NetworkState> getNetworkState() {
+        return networkState;
     }
 
     public LiveData<PagedList<Media>> getMediaListByUserName(String userName) {
@@ -98,7 +103,7 @@ public class MediaListViewModel extends ViewModel {
                 for ( MediaResponse.InstaMedia m : instaMediaList) {
                     Log.d(TAG, "Processing media record with id:" + Long.valueOf(m.id.substring(0, m.id.indexOf("_"))));
                     mediaList.add( new Media( Long.valueOf(m.id.substring(0, m.id.indexOf("_"))),
-                            Long.valueOf(m.user.id),
+                            (long) m.user.id,
                             m.images.standardResolution.url,
                             m.images.lowResolution.url,
                             m.images.thumbnail.url,

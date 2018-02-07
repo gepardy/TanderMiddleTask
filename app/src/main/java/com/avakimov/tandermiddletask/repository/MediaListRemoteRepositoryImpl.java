@@ -48,10 +48,11 @@ public class MediaListRemoteRepositoryImpl implements MediaListRemoteRepository 
             public void onResponse(Call<MediaResponse> call, Response<MediaResponse> response) {
                 if (response.isSuccessful() && response.code() == 200) {
                     consumer.consumeMedia(response.body().instaMediaList);
+                    networkState.postValue(NetworkState.LOADED);
                 } else {
                     Log.e(TAG, "Request to media failed. Response code is: " + response.code());
+                    networkState.postValue(new NetworkState(Status.FAILED, "Respose code" + response.code()));
                 }
-                networkState.postValue(NetworkState.LOADED);
             }
 
             @Override
@@ -66,19 +67,27 @@ public class MediaListRemoteRepositoryImpl implements MediaListRemoteRepository 
     @Override
     public LiveData<Integer> getExactUserByName(String name) {
         MutableLiveData<Integer> result = new MutableLiveData<>();
+        networkState.postValue(NetworkState.LOADING);
         service.getUser(token).enqueue(new Callback<UserResponse>() {
                @Override
                public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
                     if (response.isSuccessful() && response.code() == 200) {
                         if (response.body().user.username.equals(name)) {
                             result.postValue(response.body().user.id);
+                            networkState.postValue(NetworkState.LOADED);
+                        } else {
+                            networkState.postValue(new NetworkState( Status.FAILED, "Пользователь с таким логином не найден"));
                         }
+                    } else {
+                        networkState.postValue(new NetworkState(Status.FAILED, "Response code: " + response.code()));
                     }
                }
 
                @Override
                public void onFailure(Call<UserResponse> call, Throwable t) {
-                   Log.e(TAG, t.getMessage());
+                   String msg = t.getMessage();
+                   networkState.postValue(new NetworkState(Status.FAILED, msg));
+                   Log.e(TAG, msg);
                }
            }
         );

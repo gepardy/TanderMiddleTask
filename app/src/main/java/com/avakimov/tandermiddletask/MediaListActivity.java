@@ -34,8 +34,6 @@ public class MediaListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_media_list);
 
         recyclerView = findViewById(R.id.recyclerView);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
-        recyclerView.setLayoutManager(gridLayoutManager);
 
         App.getComponent(getApplicationContext()).getMediaListComponent(new MediaListModule()).inject(this);
 
@@ -44,6 +42,24 @@ public class MediaListActivity extends AppCompatActivity {
                 .get(MediaListViewModel.class);
 
         final MediaAdapter mediaAdapter = new MediaAdapter();
+        viewModel.getNetworkState().observe(this, mediaAdapter::setNetworkState);
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                switch (mediaAdapter.getItemViewType(position)) {
+                    case MediaAdapter.CONTENT_VIEW_TYPE:
+                        return 1;
+                    case MediaAdapter.PROGRESS_VIEW_TYPE:
+                        return 2;
+                    default:
+                        return 0;
+                }
+            }
+        });
+        recyclerView.setLayoutManager(gridLayoutManager);
+        recyclerView.setAdapter(mediaAdapter);
 
         Intent intent = getIntent();
         int searchType = intent.getIntExtra(SEARCH_TYPE_TAG, 1);
@@ -53,9 +69,7 @@ public class MediaListActivity extends AppCompatActivity {
             String user_name = intent.getStringExtra(EXTRA_USER_NAME);
             if (user_name != null) {
                 viewModel.getMediaListByUserName(user_name)
-                        .observe(this, pagedList -> {
-                            mediaAdapter.setList(pagedList);
-                        });
+                        .observe(this, mediaAdapter::setList);
             }
         } else if (searchType == SEARCH_TYPE_BY_ID) {
 
@@ -65,7 +79,6 @@ public class MediaListActivity extends AppCompatActivity {
                         .observe(this, mediaAdapter::setList);
             }
         }
-        recyclerView.setAdapter(mediaAdapter);
 
     }
 }
