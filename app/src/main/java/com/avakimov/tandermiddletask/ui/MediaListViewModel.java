@@ -36,7 +36,6 @@ public class MediaListViewModel extends ViewModel {
         this.remoteRepository = remoteRepository;
         this.localRepository = localRepository;
         networkState = remoteRepository.getNetworkState();
-        localRepository.clearMedia();
         findUserTrigger = new MutableLiveData<>();
 
     }
@@ -70,6 +69,11 @@ public class MediaListViewModel extends ViewModel {
                 new LivePagedListBuilder<>(localRepository.getMediaByUserId(input), config)
                         .setBoundaryCallback(new MediaListBoundaryCallback(input))
                         .build());
+    }
+
+    public void clearMedia() {
+        localRepository.clearMedia();
+
     }
 
     //  Класс для информирования ViewModel о том что лист дошел до границы,

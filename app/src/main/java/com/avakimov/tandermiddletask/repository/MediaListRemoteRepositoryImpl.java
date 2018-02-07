@@ -51,14 +51,14 @@ public class MediaListRemoteRepositoryImpl implements MediaListRemoteRepository 
                     networkState.postValue(NetworkState.LOADED);
                 } else {
                     Log.e(TAG, "Request to media failed. Response code is: " + response.code());
-                    networkState.postValue(new NetworkState(Status.FAILED, "Respose code" + response.code()));
+                    networkState.postValue(new NetworkState(Status.FAILED, "Ошибка при обращении к API Instagram. Код ответа: " + response.code()));
                 }
             }
 
             @Override
             public void onFailure(Call<MediaResponse> call, Throwable t) {
                 String errorMsg = t.getMessage();
-                networkState.postValue(new NetworkState(Status.FAILED, errorMsg));
+                networkState.postValue(new NetworkState(Status.FAILED, "Произошла ошибка сети"));
                 Log.e(TAG, errorMsg);
             }
         });
@@ -79,14 +79,14 @@ public class MediaListRemoteRepositoryImpl implements MediaListRemoteRepository 
                             networkState.postValue(new NetworkState( Status.FAILED, "Пользователь с таким логином не найден"));
                         }
                     } else {
-                        networkState.postValue(new NetworkState(Status.FAILED, "Response code: " + response.code()));
+                        networkState.postValue(new NetworkState(Status.FAILED, "Ошибка при обращении к API Instagram. Код ответа: " + response.code()));
                     }
                }
 
                @Override
                public void onFailure(Call<UserResponse> call, Throwable t) {
                    String msg = t.getMessage();
-                   networkState.postValue(new NetworkState(Status.FAILED, msg));
+                   networkState.postValue(new NetworkState(Status.FAILED, "Произошла ошибка сети"));
                    Log.e(TAG, msg);
                }
            }

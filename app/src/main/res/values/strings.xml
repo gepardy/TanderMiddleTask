@@ -3,4 +3,6 @@
     <string name="find_button_text">Найти</string>
     <string name="input_invitation">Введите имя пользователя</string>
     <string name="try_again">Попробовать снова</string>
+    <string name="empty_name">Пустое имя пользователя недопустимо</string>
+    <string name="wrong_search_type">Внутренняя ошибка приложения, передан неверный идентификатор поиска</string>
 </resources>

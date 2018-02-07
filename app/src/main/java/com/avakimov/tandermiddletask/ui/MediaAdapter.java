@@ -84,7 +84,7 @@ public class MediaAdapter extends PagedListAdapter<Media, RecyclerView.ViewHolde
         boolean hasExtraRow = hasExtraRow();
         if (previousHasExtraRow != hasExtraRow) {
             if (previousHasExtraRow) {
-                notifyItemRemoved(getItemCount()-1);
+                notifyItemRemoved(getItemCount());
             } else {
                 notifyItemInserted(getItemCount());
             }
