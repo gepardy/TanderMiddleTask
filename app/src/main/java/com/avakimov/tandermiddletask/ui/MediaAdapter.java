@@ -34,7 +34,6 @@ public class MediaAdapter extends PagedListAdapter<Media, RecyclerView.ViewHolde
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.d(TAG, "OnCreateViewHolder");
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View view;
         if (viewType == CONTENT_VIEW_TYPE) {
@@ -51,7 +50,6 @@ public class MediaAdapter extends PagedListAdapter<Media, RecyclerView.ViewHolde
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        Log.d(TAG, "OnBindViewHolder. Position: " + position);
         switch (getItemViewType(position)) {
             case CONTENT_VIEW_TYPE:
                 ((MediaItemViewHolder) holder).bind(getItem(position));
@@ -72,12 +70,10 @@ public class MediaAdapter extends PagedListAdapter<Media, RecyclerView.ViewHolde
 
     @Override
     public int getItemViewType(int position) {
-        Log.d(TAG, "onGetItemViewType. Position:" + position + ". Item count: " + getItemCount() + ". Has extra row?: " + hasExtraRow());
         return hasExtraRow() && position == getItemCount() - 1 ? PROGRESS_VIEW_TYPE : CONTENT_VIEW_TYPE;
     }
 
     public void setNetworkState(NetworkState networkState) {
-        Log.d(TAG, "Network state changed");
         NetworkState previousNetworkState = this.networkState;
         boolean previousHasExtraRow = hasExtraRow();
         this.networkState = networkState;

@@ -39,4 +39,8 @@ public class RequestViewModel extends ViewModel {
     public LiveData<List<User>> getSuggestions() {
         return suggestions;
     }
+
+    public void onSetCustomToken( String token) {
+        requestRemoteRepository.setCustomToken( token );
+    }
 }

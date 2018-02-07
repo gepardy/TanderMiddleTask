@@ -14,6 +14,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 
 public class App extends Application {
     private AppComponent appComponent;
+    private String customToken;
 
     @Override
     public void onCreate() {
@@ -28,6 +29,14 @@ public class App extends Application {
 
     public static AppComponent getComponent(Context context){
         return ((App) context.getApplicationContext()).appComponent;
+    }
+
+    public static void setCustomToken(Context context, String customToken){
+        ((App) context.getApplicationContext()).customToken = customToken;
+    }
+
+    public static String getCustomToken(Context context){
+        return  ((App) context.getApplicationContext()).customToken;
     }
 
 }

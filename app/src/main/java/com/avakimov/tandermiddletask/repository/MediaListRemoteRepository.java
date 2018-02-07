@@ -17,6 +17,8 @@ public interface MediaListRemoteRepository {
     LiveData<Integer> getExactUserByName(String name);
     LiveData<NetworkState> getNetworkState();
 
+    void setCustomToken(String customToken);
+
     public interface MediaListConsumer{
         void consumeMedia(List<MediaResponse.InstaMedia> instaMediaList);
     }

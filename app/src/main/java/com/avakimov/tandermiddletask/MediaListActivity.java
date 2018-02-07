@@ -39,15 +39,27 @@ public class MediaListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_media_list);
         App.getComponent(getApplicationContext()).getMediaListComponent(new MediaListModule()).inject(this);
 
-        recyclerView = findViewById(R.id.recyclerView);
-        swipeRefreshLayout = findViewById(R.id.content_refresh);
+        // Настраиваем VM
         viewModel = ViewModelProviders
                 .of(this, mediaListViewModelFactory)
                 .get(MediaListViewModel.class);
 
+        String customToken = App.getCustomToken(this);
+        if (customToken != null) {
+            viewModel.setCustomToken(customToken);
+        }
+
+        // Выставляем компоненты
+        swipeRefreshLayout = findViewById(R.id.content_refresh);
+        recyclerView = findViewById(R.id.recyclerView);
+
+        try {
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+        } catch (NullPointerException exception) {
+            Log.d(TAG, exception.getMessage());
+        }
 
         final MediaAdapter mediaAdapter = new MediaAdapter();
-
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override

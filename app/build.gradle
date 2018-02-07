@@ -50,5 +50,4 @@ dependencies {
     compile "com.squareup.retrofit2:retrofit:${retrofitVersion}"
     compile "com.squareup.retrofit2:converter-gson:${retrofitVersion}"
 
-    compile 'eu.the4thfloor.volley:com.android.volley:2015.05.28'
 }

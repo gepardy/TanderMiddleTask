@@ -12,4 +12,5 @@ import java.util.List;
 
 public interface RequestRemoteRepository {
     LiveData<List<User>> getUsersByNamePart(String value);
+    void setCustomToken(String token);
 }

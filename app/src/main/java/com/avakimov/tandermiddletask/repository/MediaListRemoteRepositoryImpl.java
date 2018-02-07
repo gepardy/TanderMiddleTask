@@ -23,7 +23,7 @@ import retrofit2.Response;
 
 public class MediaListRemoteRepositoryImpl implements MediaListRemoteRepository {
     private String TAG = getClass().getSimpleName();
-    private final String token;
+    private String token;
     private InstagramService service;
     private MutableLiveData<NetworkState> networkState;
 
@@ -97,6 +97,11 @@ public class MediaListRemoteRepositoryImpl implements MediaListRemoteRepository 
     @Override
     public LiveData<NetworkState> getNetworkState() {
         return networkState;
+    }
+
+    @Override
+    public void setCustomToken(String customToken) {
+        token = customToken;
     }
 
 

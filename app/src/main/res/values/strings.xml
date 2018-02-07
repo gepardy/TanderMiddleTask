@@ -5,4 +5,5 @@
     <string name="try_again">Попробовать снова</string>
     <string name="empty_name">Пустое имя пользователя недопустимо</string>
     <string name="wrong_search_type">Внутренняя ошибка приложения, передан неверный идентификатор поиска</string>
+    <string name="authorize_menu_item">Авторизоваться</string>
 </resources>

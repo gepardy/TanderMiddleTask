@@ -76,6 +76,10 @@ public class MediaListViewModel extends ViewModel {
 
     }
 
+    public void setCustomToken(String customToken) {
+        remoteRepository.setCustomToken(customToken);
+    }
+
     //  Класс для информирования ViewModel о том что лист дошел до границы,
     // и пора бы скачать данные из сети
     private class MediaListBoundaryCallback extends PagedList.BoundaryCallback<Media> {
@@ -114,7 +118,7 @@ public class MediaListViewModel extends ViewModel {
                             m.user.profileImageUrl,
                             m.user.username,
                             m.likes.count,
-                            m.caption.text));
+                            m.caption != null ? m.caption.text : null));
                 }
                 localRepository.insertMedia(mediaList);
             });

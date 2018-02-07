@@ -21,7 +21,7 @@ import retrofit2.Response;
 
 public class RequestRemoteRepositoryImpl implements RequestRemoteRepository {
     private final String TAG = getClass().getName();
-    private final String token;
+    private String token;
     private final InstagramService service;
 
     public RequestRemoteRepositoryImpl(InstagramService service, String token){
@@ -43,7 +43,7 @@ public class RequestRemoteRepositoryImpl implements RequestRemoteRepository {
                     // Моделируем поведение целевого сервиса
                     // возвращаем данные только если они правда похожи на то что ввел пользовтаель
                     if (response.body().user.toString().startsWith(value)) {
-                        List<User> resultData = new ArrayList<User>(1);
+                        List<User> resultData = new ArrayList<>(1);
                         resultData.add(response.body().user);
                         result.postValue(resultData);
                     }
@@ -60,5 +60,10 @@ public class RequestRemoteRepositoryImpl implements RequestRemoteRepository {
             }
         });
         return result;
+    }
+
+    @Override
+    public void setCustomToken(String token) {
+        this.token = token;
     }
 }

@@ -7,17 +7,17 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.avakimov.tandermiddletask.di.RequestModule;
 import com.avakimov.tandermiddletask.domain.User;
 import com.avakimov.tandermiddletask.ui.RequestViewModel;
+import com.avakimov.tandermiddletask.util.InstagramOAuthHelper;
 import com.avakimov.tandermiddletask.util.RequestViewModelFactory;
 
 import javax.inject.Inject;
@@ -25,6 +25,8 @@ import javax.inject.Inject;
 public class RequestActivity extends AppCompatActivity {
     @Inject
     RequestViewModelFactory requestViewModelFactory;
+    @Inject
+    InstagramOAuthHelper authHelper;
 
     private String TAG = getClass().getName();
     private RequestViewModel viewModel;
@@ -37,7 +39,7 @@ public class RequestActivity extends AppCompatActivity {
         setContentView(R.layout.activity_request);
 
         App.getComponent(getApplicationContext())
-                .getRequestComponent(new RequestModule()).inject(this);
+                .getRequestComponent(new RequestModule( this )).inject(this);
 
         fieldSearch = findViewById(R.id.search_field);
         buttonSearch = findViewById(R.id.search_button);
@@ -54,7 +56,6 @@ public class RequestActivity extends AppCompatActivity {
             }
         });
 
-        fieldSearch.clearFocus();
         fieldSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -68,14 +69,11 @@ public class RequestActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                Log.d(TAG, "GotChangeEditEvent");
                 viewModel.onTypeInSearchField(editable.toString());
             }
         });
 
-        buttonSearch.setOnClickListener(view -> {
-            searchByName(fieldSearch.getText().toString());
-        });
+        buttonSearch.setOnClickListener(view -> searchByName(fieldSearch.getText().toString()));
 
         fieldSearch.setOnEditorActionListener((textView, i, keyEvent) -> {
             if (i == EditorInfo.IME_ACTION_SEARCH) {
@@ -84,6 +82,26 @@ public class RequestActivity extends AppCompatActivity {
             }
             return false;
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.request_activity_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.authorize_user:
+                authHelper.authorize(token -> {
+                    App.setCustomToken(this, token);
+                    viewModel.onSetCustomToken( token );
+                });
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void searchByName(String userName){
@@ -136,9 +154,9 @@ public class RequestActivity extends AppCompatActivity {
             clientInfoParams.put("grant_type", "authorization_code");
             clientInfoParams.put("redirect_uri", "http://avakimov.am.com");
 
-            new InstagramOAuthService(this)
+            new InstagramOAuthHelper(this)
                     .setClientInfoParameters(clientInfoParams)
-                    .authorize(new InstagramOAuthService.OAuthCallBack() {
+                    .authorize(new InstagramOAuthHelper.OAuthCallBack() {
                         @Override
                         public void onSuccessAuthenticate(String accessToken) {
                             Log.i("TAG Token", accessToken);
