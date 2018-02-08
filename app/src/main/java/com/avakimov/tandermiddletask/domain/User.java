@@ -14,7 +14,7 @@ public class User {
     public String username;
 
     @PrimaryKey
-    public int id;
+    public Long id;
     @SerializedName("profile_picture")
     public String profileImageUrl;
 
@@ -22,4 +22,5 @@ public class User {
     public String toString() {
         return username;
     }
+
 }

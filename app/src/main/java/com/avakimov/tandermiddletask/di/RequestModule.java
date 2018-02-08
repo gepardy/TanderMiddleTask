@@ -6,8 +6,6 @@ import com.avakimov.tandermiddletask.util.InstagramOAuthHelper;
 import com.avakimov.tandermiddletask.api.InstagramService;
 import com.avakimov.tandermiddletask.repository.RequestRemoteRepository;
 import com.avakimov.tandermiddletask.repository.RequestRemoteRepositoryImpl;
-import com.avakimov.tandermiddletask.repository.RequestLocalRepository;
-import com.avakimov.tandermiddletask.repository.RequestLocalRespoitoryImpl;
 
 import javax.inject.Named;
 
@@ -27,12 +25,6 @@ public class RequestModule {
 
     @RequestScope
     @Provides
-    RequestLocalRepository provideRequestRespoitory(){
-        return new RequestLocalRespoitoryImpl();
-    }
-
-    @RequestScope
-    @Provides
     RequestRemoteRepository provideRemoteRepository(InstagramService instagramService, @Named("token") String token){
         return new RequestRemoteRepositoryImpl(instagramService, token);
     }
@@ -48,13 +40,6 @@ public class RequestModule {
     @Named("client_id")
     String provideClientId(){
         return "c4ee1813155a4343b3764bd1ebeeadca";
-    }
-
-    @RequestScope
-    @Provides
-    @Named("client_secret")
-    String provigeClientSecret(){
-        return "312f1f3b11b24a469edbe55001c66685";
     }
 
     @RequestScope

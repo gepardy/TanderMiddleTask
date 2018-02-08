@@ -39,9 +39,7 @@ public class InstagramOAuthHelper {
     }
 
     public void authorize( OAuthCallback listener ) {
-        CookieManager.getInstance().removeAllCookies(aBoolean -> {
-            new InstagramOAuthDialog(context, listener, getAuthenticationApi(), redirectUri).show();
-        });
+        CookieManager.getInstance().removeAllCookies(aBoolean -> new InstagramOAuthDialog(context, listener, getAuthenticationApi(), redirectUri).show());
     }
 
     private String getAuthenticationApi() {
@@ -56,7 +54,6 @@ public class InstagramOAuthHelper {
 
         private String authenticationApi;
         private String redirectUri;
-        private String DEFAULT_CONTENT_AUTH_DIALOG = "Подключаемся к серверу инстаграм";
 
         InstagramOAuthDialog(Context context, OAuthCallback listener, String authenticationApi, String redirectUri) {
             super(context);

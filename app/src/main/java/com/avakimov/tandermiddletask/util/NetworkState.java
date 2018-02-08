@@ -7,14 +7,16 @@ package com.avakimov.tandermiddletask.util;
 public class NetworkState {
     private final Status status;
     private final String message;
+    private final Boolean canRetry;
 
-    public static final NetworkState LOADED = new NetworkState(Status.SUCCESS, "");
-    public static final NetworkState LOADING = new NetworkState(Status.RUNNING, "");
+    public static final NetworkState LOADED = new NetworkState(Status.SUCCESS, "", null);
+    public static final NetworkState LOADING = new NetworkState(Status.RUNNING, "", null);
 
 
-    public NetworkState(Status status, String message) {
+    public NetworkState(Status status, String message, Boolean canRetry) {
         this.status = status;
         this.message = message;
+        this.canRetry = canRetry;
     }
 
     public Status getStatus() {
@@ -23,5 +25,9 @@ public class NetworkState {
 
     public String getMessage() {
         return message;
+    }
+
+    public Boolean getCanRetry() {
+        return canRetry;
     }
 }

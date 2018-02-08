@@ -16,7 +16,7 @@ public interface InstagramService {
     @GET("users/self")
     Call<UserResponse> getUser(@Query("access_token") String token);
     @GET("users/{user_id}/media/recent")
-    Call<MediaResponse> getUserMedia(@Path("user_id") Integer user_id,
+    Call<MediaResponse> getUserMedia(@Path("user_id") Long user_id,
                                      @Query("access_token") String token,
                                      @QueryMap Map<String, String> options);
 }

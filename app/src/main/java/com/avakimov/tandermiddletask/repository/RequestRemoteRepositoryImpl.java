@@ -20,7 +20,7 @@ import retrofit2.Response;
  */
 
 public class RequestRemoteRepositoryImpl implements RequestRemoteRepository {
-    private final String TAG = getClass().getName();
+    private final String TAG = getClass().getSimpleName();
     private String token;
     private final InstagramService service;
 
@@ -40,15 +40,16 @@ public class RequestRemoteRepositoryImpl implements RequestRemoteRepository {
             public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
                 if (response.isSuccessful() && response.code() == 200) {
                     Log.d(TAG, "Got response!: " + response.body().user);
+
                     // Моделируем поведение целевого сервиса
                     // возвращаем данные только если они правда похожи на то что ввел пользовтаель
-                    if (response.body().user.toString().startsWith(value)) {
+                    if (response.body().user.username.startsWith(value)) {
                         List<User> resultData = new ArrayList<>(1);
                         resultData.add(response.body().user);
                         result.postValue(resultData);
                     }
                 } else {
-                    Log.e(TAG, "Unsuccsessful request. Response code is " + response.code());
+                    Log.e(TAG, "Unsuccessful request. Response code is " + response.code());
                 }
             }
 

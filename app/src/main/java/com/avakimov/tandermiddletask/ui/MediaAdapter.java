@@ -7,12 +7,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.avakimov.tandermiddletask.R;
 import com.avakimov.tandermiddletask.domain.Media;
+import com.avakimov.tandermiddletask.util.ListItemClickListener;
 import com.avakimov.tandermiddletask.util.NetworkState;
 import com.avakimov.tandermiddletask.util.Status;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -24,12 +26,14 @@ import com.facebook.drawee.view.SimpleDraweeView;
 public class MediaAdapter extends PagedListAdapter<Media, RecyclerView.ViewHolder> {
     private final String TAG = getClass().getSimpleName();
     private NetworkState networkState;
+    private ListItemClickListener clickListener;
 
     public static final int CONTENT_VIEW_TYPE = R.layout.media_list_item_layout;
     public static final int PROGRESS_VIEW_TYPE = R.layout.progress_item;
 
-    public MediaAdapter(){
+    public MediaAdapter(ListItemClickListener clickListener){
         super(Media.DIFF_CALLBACK);
+        this.clickListener = clickListener;
     }
 
     @Override
@@ -41,9 +45,9 @@ public class MediaAdapter extends PagedListAdapter<Media, RecyclerView.ViewHolde
             return new MediaItemViewHolder(view);
         } else if (viewType == PROGRESS_VIEW_TYPE) {
             view = layoutInflater.inflate(PROGRESS_VIEW_TYPE, parent, false);
-            return new ProgressItemViewHolder(view);
+            return new ProgressItemViewHolder(view, clickListener);
         } else {
-            throw new IllegalArgumentException("View type" + viewType + "not supported");
+            throw new IllegalArgumentException("View type " + viewType + " not supported");
         }
 
     }
@@ -56,6 +60,7 @@ public class MediaAdapter extends PagedListAdapter<Media, RecyclerView.ViewHolde
                 break;
             case PROGRESS_VIEW_TYPE:
                 ((ProgressItemViewHolder) holder).bind(networkState);
+                break;
         }
     }
 
@@ -125,11 +130,13 @@ public class MediaAdapter extends PagedListAdapter<Media, RecyclerView.ViewHolde
         private TextView errMessage;
         private Button btn;
 
-        ProgressItemViewHolder(View itemView) {
+        ProgressItemViewHolder(View itemView, ListItemClickListener listener) {
             super(itemView);
             this.progressBar = itemView.findViewById(R.id.progressBar2);
             this.errMessage = itemView.findViewById(R.id.err_message);
             this.btn = itemView.findViewById(R.id.retry_button);
+
+            btn.setOnClickListener(view -> listener.onClick());
         }
 
         void bind(NetworkState networkState) {
@@ -142,7 +149,12 @@ public class MediaAdapter extends PagedListAdapter<Media, RecyclerView.ViewHolde
             if (networkState != null && networkState.getStatus() == Status.FAILED) {
                 errMessage.setVisibility(View.VISIBLE);
                 errMessage.setText(networkState.getMessage());
-                btn.setVisibility(View.VISIBLE);
+
+                if (networkState.getCanRetry()) {
+                    btn.setVisibility(View.VISIBLE);
+                } else {
+                    btn.setVisibility(View.GONE);
+                }
             } else {
                 errMessage.setVisibility(View.GONE);
                 btn.setVisibility(View.GONE);

@@ -6,4 +6,6 @@
     <string name="empty_name">Пустое имя пользователя недопустимо</string>
     <string name="wrong_search_type">Внутренняя ошибка приложения, передан неверный идентификатор поиска</string>
     <string name="authorize_menu_item">Авторизоваться</string>
+    <string name="media_list_title">Посты пользователя</string>
+    <string name="request_activity_title">Поиск пользователя</string>
 </resources>

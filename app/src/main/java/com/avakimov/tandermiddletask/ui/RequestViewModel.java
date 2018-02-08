@@ -7,7 +7,6 @@ import android.arch.lifecycle.ViewModel;
 
 import com.avakimov.tandermiddletask.domain.User;
 import com.avakimov.tandermiddletask.repository.RequestRemoteRepository;
-import com.avakimov.tandermiddletask.repository.RequestLocalRepository;
 
 import java.util.List;
 
@@ -16,13 +15,13 @@ import java.util.List;
  */
 
 public class RequestViewModel extends ViewModel {
-    private RequestLocalRepository localRepository;
     private RequestRemoteRepository requestRemoteRepository;
     private LiveData<List<User>> suggestions;
     private MutableLiveData<String> requestTrigger;
 
-    public RequestViewModel(RequestLocalRepository local, RequestRemoteRepository remote) {
-        this.localRepository = local;
+    private static final int USER_SEARCH_THRESHOLD = 1;
+
+    public RequestViewModel(RequestRemoteRepository remote) {
         this.requestRemoteRepository = remote;
 
         requestTrigger = new MutableLiveData<>();
@@ -31,7 +30,7 @@ public class RequestViewModel extends ViewModel {
     }
 
     public void onTypeInSearchField(String value) {
-        if (value.length() > 2) {
+        if (value.length() > USER_SEARCH_THRESHOLD) {
             requestTrigger.postValue(value);
         }
     }

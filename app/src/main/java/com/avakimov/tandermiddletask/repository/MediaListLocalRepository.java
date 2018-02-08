@@ -11,7 +11,7 @@ import java.util.List;
  */
 
 public interface MediaListLocalRepository {
-    DataSource.Factory<Integer, Media> getMediaByUserId(Integer userId);
+    DataSource.Factory<Integer, Media> getMediaByUserId(Long userId);
     void insertMedia(List<Media> mediaList);
-    void clearMedia();
+    void clearMedia(Long user_id);
 }

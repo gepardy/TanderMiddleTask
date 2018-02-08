@@ -13,13 +13,13 @@ import java.util.List;
  */
 
 public interface MediaListRemoteRepository {
-    void requestMediaList(Integer user_id, @Nullable Long last_id, MediaListConsumer consumer);
-    LiveData<Integer> getExactUserByName(String name);
+    void requestMediaList(Long user_id, @Nullable Long last_id, MediaListConsumer consumer);
+    LiveData<Long> getExactUserByName(String name);
     LiveData<NetworkState> getNetworkState();
 
     void setCustomToken(String customToken);
 
-    public interface MediaListConsumer{
+    interface MediaListConsumer{
         void consumeMedia(List<MediaResponse.InstaMedia> instaMediaList);
     }
 }

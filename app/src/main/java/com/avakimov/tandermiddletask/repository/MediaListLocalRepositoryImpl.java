@@ -22,7 +22,7 @@ public class MediaListLocalRepositoryImpl implements MediaListLocalRepository {
     }
 
     @Override
-    public DataSource.Factory<Integer, Media> getMediaByUserId(Integer user_id) {
+    public DataSource.Factory<Integer, Media> getMediaByUserId(Long user_id) {
         return db.getUsersMedia(user_id);
     }
 
@@ -32,7 +32,7 @@ public class MediaListLocalRepositoryImpl implements MediaListLocalRepository {
     }
 
     @Override
-    public void clearMedia() {
-        executor.execute(() -> db.clearMedia());
+    public void clearMedia(Long user_id) {
+        executor.execute(() -> db.clearMedia(user_id));
     }
 }

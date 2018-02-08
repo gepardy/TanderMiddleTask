@@ -2,22 +2,28 @@ package com.avakimov.tandermiddletask;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.os.ResultReceiver;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import com.avakimov.tandermiddletask.di.MediaListModule;
 import com.avakimov.tandermiddletask.ui.MediaAdapter;
 import com.avakimov.tandermiddletask.ui.MediaListViewModel;
+import com.avakimov.tandermiddletask.util.ListItemClickListener;
 import com.avakimov.tandermiddletask.util.MediaListViewModelFactory;
 
 import javax.inject.Inject;
 
-public class MediaListActivity extends AppCompatActivity {
+public class MediaListActivity extends AppCompatActivity implements ListItemClickListener {
     private final String TAG = getClass().getSimpleName();
+    private MediaAdapter mediaAdapter;
 
     @Inject
     MediaListViewModelFactory mediaListViewModelFactory;
@@ -25,6 +31,7 @@ public class MediaListActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     SwipeRefreshLayout swipeRefreshLayout;
     MediaListViewModel viewModel;
+    TextView errorMsg;
 
     public static final String SEARCH_TYPE_TAG = "search_type";
     public static final String EXTRA_USER_NAME = "user_name";
@@ -39,6 +46,8 @@ public class MediaListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_media_list);
         App.getComponent(getApplicationContext()).getMediaListComponent(new MediaListModule()).inject(this);
 
+        setTitle(R.string.media_list_title);
+
         // Настраиваем VM
         viewModel = ViewModelProviders
                 .of(this, mediaListViewModelFactory)
@@ -52,6 +61,7 @@ public class MediaListActivity extends AppCompatActivity {
         // Выставляем компоненты
         swipeRefreshLayout = findViewById(R.id.content_refresh);
         recyclerView = findViewById(R.id.recyclerView);
+        errorMsg = findViewById(R.id.media_error_msg);
 
         try {
             getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -59,7 +69,7 @@ public class MediaListActivity extends AppCompatActivity {
             Log.d(TAG, exception.getMessage());
         }
 
-        final MediaAdapter mediaAdapter = new MediaAdapter();
+        mediaAdapter = new MediaAdapter( this );
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
@@ -92,7 +102,7 @@ public class MediaListActivity extends AppCompatActivity {
         switch (searchType) {
             case SEARCH_TYPE_BY_NAME:
                 String searchUserName = intent.getStringExtra(EXTRA_USER_NAME);
-                if (searchUserName != null && !searchUserName.equals("")) {
+                if (searchUserName != null && !TextUtils.isEmpty(searchUserName)) {
                     viewModel.getMediaListByUserName(searchUserName)
                             .observe(this, mediaAdapter::setList);
                 } else {
@@ -101,7 +111,7 @@ public class MediaListActivity extends AppCompatActivity {
                 break;
 
             case SEARCH_TYPE_BY_ID:
-                int searchUserId = intent.getIntExtra(EXTRA_USER_ID, -1);
+                Long searchUserId = intent.getLongExtra(EXTRA_USER_ID, -1);
                 if (searchUserId != -1) {
                     viewModel.getMediaListByUserId(searchUserId)
                             .observe(this, mediaAdapter::setList);
@@ -116,6 +126,14 @@ public class MediaListActivity extends AppCompatActivity {
 
 
     private void showErrorScreen(String errorMessage) {
+        errorMsg.setText(errorMessage);
+        errorMsg.setVisibility(View.VISIBLE);
+        swipeRefreshLayout.setVisibility(View.GONE);
+    }
 
+    @Override
+    public void onClick() {
+        Log.d(TAG, "onClick");
+        viewModel.retryLoad();
     }
 }

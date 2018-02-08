@@ -27,6 +27,8 @@ public class MediaListRemoteRepositoryImpl implements MediaListRemoteRepository 
     private InstagramService service;
     private MutableLiveData<NetworkState> networkState;
 
+    private static final int PAGE_SIZE = 6;
+
     public MediaListRemoteRepositoryImpl(String token, InstagramService service){
         this.token = token;
         this.service = service;
@@ -35,9 +37,9 @@ public class MediaListRemoteRepositoryImpl implements MediaListRemoteRepository 
     }
 
     @Override
-    public void requestMediaList(Integer user_id, @Nullable Long last_id, MediaListRemoteRepository.MediaListConsumer consumer) {
+    public void requestMediaList(Long user_id, @Nullable Long last_id, MediaListConsumer consumer) {
         HashMap<String, String> params = new HashMap<>();
-        params.put("count", String.valueOf(6));
+        params.put("count", String.valueOf(PAGE_SIZE));
         if (last_id != null) {
             params.put("max_id", String.valueOf(last_id));
         }
@@ -51,23 +53,24 @@ public class MediaListRemoteRepositoryImpl implements MediaListRemoteRepository 
                     networkState.postValue(NetworkState.LOADED);
                 } else {
                     Log.e(TAG, "Request to media failed. Response code is: " + response.code());
-                    networkState.postValue(new NetworkState(Status.FAILED, "Ошибка при обращении к API Instagram. Код ответа: " + response.code()));
+                    networkState.postValue(new NetworkState(Status.FAILED, "Ошибка при обращении к API Instagram. Код ответа: " + response.code(), true));
                 }
             }
 
             @Override
             public void onFailure(Call<MediaResponse> call, Throwable t) {
                 String errorMsg = t.getMessage();
-                networkState.postValue(new NetworkState(Status.FAILED, "Произошла ошибка сети"));
+                networkState.postValue(new NetworkState(Status.FAILED, "Произошла ошибка сети", true));
                 Log.e(TAG, errorMsg);
             }
         });
     }
 
     @Override
-    public LiveData<Integer> getExactUserByName(String name) {
-        MutableLiveData<Integer> result = new MutableLiveData<>();
+    public LiveData<Long> getExactUserByName(String name) {
+        MutableLiveData<Long> result = new MutableLiveData<>();
         networkState.postValue(NetworkState.LOADING);
+
         service.getUser(token).enqueue(new Callback<UserResponse>() {
                @Override
                public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
@@ -76,17 +79,17 @@ public class MediaListRemoteRepositoryImpl implements MediaListRemoteRepository 
                             result.postValue(response.body().user.id);
                             networkState.postValue(NetworkState.LOADED);
                         } else {
-                            networkState.postValue(new NetworkState( Status.FAILED, "Пользователь с таким логином не найден"));
+                            networkState.postValue(new NetworkState( Status.FAILED, "Пользователь с таким логином не найден", false));
                         }
                     } else {
-                        networkState.postValue(new NetworkState(Status.FAILED, "Ошибка при обращении к API Instagram. Код ответа: " + response.code()));
+                        networkState.postValue(new NetworkState(Status.FAILED, "Ошибка при обращении к API Instagram. Код ответа: " + response.code(), true));
                     }
                }
 
                @Override
                public void onFailure(Call<UserResponse> call, Throwable t) {
                    String msg = t.getMessage();
-                   networkState.postValue(new NetworkState(Status.FAILED, "Произошла ошибка сети"));
+                   networkState.postValue(new NetworkState(Status.FAILED, "Произошла ошибка сети", true));
                    Log.e(TAG, msg);
                }
            }

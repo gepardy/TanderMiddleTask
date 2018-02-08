@@ -16,11 +16,12 @@ import java.util.List;
 @Dao
 public interface TanderMiddleDAO {
     @Query("SELECT * FROM Media WHERE user_id = :user_id ORDER BY id DESC")
-    DataSource.Factory<Integer, Media> getUsersMedia(int user_id);
+    DataSource.Factory<Integer, Media> getUsersMedia(Long user_id);
 
     @Insert
     void insertMediaList(List<Media> mediaList);
 
-    @Query("DELETE FROM Media")
-    void clearMedia();
+    @Query("DELETE FROM Media WHERE user_id = :user_id")
+    void clearMedia(Long user_id);
+
 }
