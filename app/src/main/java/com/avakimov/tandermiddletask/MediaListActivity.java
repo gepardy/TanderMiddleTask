@@ -91,7 +91,6 @@ public class MediaListActivity extends AppCompatActivity implements ListItemClic
 
         // Прежде чем начать загрузку еще подпишем swipeRefreshLayout на действие обновления
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            Log.d(TAG, "Refresh by swipe");
             swipeRefreshLayout.setRefreshing(true);
             viewModel.clearMedia();
             swipeRefreshLayout.setRefreshing(false);
@@ -133,7 +132,6 @@ public class MediaListActivity extends AppCompatActivity implements ListItemClic
 
     @Override
     public void onClick() {
-        Log.d(TAG, "onClick");
         viewModel.retryLoad();
     }
 }

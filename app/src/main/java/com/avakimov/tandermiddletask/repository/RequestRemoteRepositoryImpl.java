@@ -39,8 +39,6 @@ public class RequestRemoteRepositoryImpl implements RequestRemoteRepository {
             @Override
             public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
                 if (response.isSuccessful() && response.code() == 200) {
-                    Log.d(TAG, "Got response!: " + response.body().user);
-
                     // Моделируем поведение целевого сервиса
                     // возвращаем данные только если они правда похожи на то что ввел пользовтаель
                     if (response.body().user.username.startsWith(value)) {
